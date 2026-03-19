@@ -14,5 +14,4 @@ public class Main {
             System.out.println(a % 10);
         }
     }
-    //test
 }
