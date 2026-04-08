@@ -1,97 +1,168 @@
-import java.awt.*;
-import java.util.Scanner;
+import java.util.*;
 public class Main {
-    public static void main(String args[]) {
-        Scanner sc = new Scanner(System.in);
-        int a=sc.nextInt();
-        int b=sc.nextInt();
-        System.out.println(task10(a,b));
-    }
 
-    public static void task1(int a) {
-        if (a < 10) System.out.println(a);
-        else {
-            task1(a / 10);
-            System.out.println(a % 10);
+    static LinkedList<BankAccount> list = new LinkedList<>();
+    static Stack<String> stack = new Stack<>();
+    static Queue<String> bills = new LinkedList<>();
+    static Queue<BankAccount> requests = new LinkedList<>();
+
+    static Scanner sc = new Scanner(System.in);
+    static int id = 1;
+
+    public static void main(String[] args) {
+        BankAccount[] arr = new BankAccount[3];
+        arr[0] = new BankAccount(1, "Ali", 150000);
+        arr[1] = new BankAccount(2, "Dina", 220000);
+        arr[2] = new BankAccount(3, "Pudge", 100000);
+        for (int i = 0; i < 3; i++) {
+            System.out.println(arr[i].username + " " + arr[i].balance);
+        }
+        while (true) {
+            System.out.println("1 Bank");
+            System.out.println("2 ATM");
+            System.out.println("3 Admin");
+            System.out.println("4 Exit");
+            int x = sc.nextInt();
+            if (x == 1) bank();
+            if (x == 2) atm();
+            if (x == 3) admin();
+            if (x == 4) break;
         }
     }
-//    int a = sc.nextInt();
-//    System.out.println(task1(a));
 
-    public static void task2a(int[] n,int a,Scanner sc){
-        if(a==n.length)return;
-        n[a]=sc.nextInt();
-        task2a(n,a+1,sc);
+    static void bank() {
+        while (true) {
+            System.out.println("1 add");
+            System.out.println("2 deposit");
+            System.out.println("3 withdraw");
+            System.out.println("4 show");
+            System.out.println("5 bill");
+            System.out.println("6 back");
+
+            int x = sc.nextInt();
+
+            if (x == 1) {
+                String n = sc.next();
+                requests.add(new BankAccount(id++, n, 0));
+            }
+
+            if (x == 2) {
+                String n = sc.next();
+                BankAccount a = find(n);
+                if (a != null) {
+                    int d = sc.nextInt();
+                    a.balance += d;
+                    stack.push("dep " + d + " " + n);
+                }
+            }
+
+            if (x == 3) {
+                String n = sc.next();
+                BankAccount a = find(n);
+                if (a != null) {
+                    int w = sc.nextInt();
+                    if (a.balance >= w) {
+                        a.balance -= w;
+                        stack.push("with " + w + " " + n);
+                    }
+                }
+            }
+
+            if (x == 4) {
+                for (BankAccount a : list) {
+                    System.out.println(a.username + " " + a.balance);
+                }
+            }
+
+            if (x == 5) {
+                String b = sc.next();
+                bills.add(b);
+            }
+
+            if (x == 6) break;
+        }
     }
 
-    public static int task2b(int[] n,int a){
-        if(a==0)return 0;
-        return n[a-1]+task2b(n,a-1);
-    }
-//    int a = sc.nextInt();
-//    int[] n=new int[a];
-//    task2a(n,0,sc);
-//    System.out.println((double)task2b(n,a)/a);
-    public static boolean task3(int a,int b){
-        if (a<=1)return false;
-        if(b*b>a)return true;
-        if(a%b==0)return false;
-        return task3(a,b+1);
-    }
-//    int b = sc.nextInt();
-//    System.out.println(task3(b,2));
-    public static int task4(int a){
-        if(a<=1)return 1;
-        return a*task4(a-1);
-    }
-//    int a = sc.nextInt();
-//    System.out.println(task4(a));
-    public static int task5(int a){
-        if(a==0)return 0;
-        if(a==1)return 1;
-        return task5(a-1)+task5(a-2);
-    }
-//    int a = sc.nextInt();
-//    System.out.println(task5(a));
+    static void atm() {
+        String n = sc.next();
+        BankAccount a = find(n);
 
-    public static double task6(int a,int b){
-        if(b==0)return 1;
-        if(b<0)return 1/task6(a,-b);
-        return a*task6(a,b-1);
+        if (a == null) return;
+
+        while (true) {
+            System.out.println("1 bal");
+            System.out.println("2 with");
+            System.out.println("3 back");
+
+            int x = sc.nextInt();
+
+            if (x == 1) {
+                System.out.println(a.balance);
+            }
+
+            if (x == 2) {
+                int w = sc.nextInt();
+                if (a.balance >= w) {
+                    a.balance -= w;
+                    stack.push("atm " + w + " " + n);
+                }
+            }
+
+            if (x == 3) break;
+        }
     }
-//    int a = sc.nextInt();
-//    int b = sc.nexInt();
-//    System.out.println(task6(a,b))
-    public static void task7(int a,Scanner sc){
-        if(a<=0)return;
-        int b=sc.nextInt();
-        task7(a-1,sc);
-        System.out.println(b+" ");
+
+    static void admin() {
+        while (true) {
+            System.out.println("1 ok acc");
+            System.out.println("2 show req");
+            System.out.println("3 pay bill");
+            System.out.println("4 show bills");
+            System.out.println("5 stack");
+            System.out.println("6 back");
+
+            int x = sc.nextInt();
+
+            if (x == 1) {
+                if (!requests.isEmpty()) {
+                    BankAccount a = requests.poll();
+                    list.add(a);
+                }
+            }
+
+            if (x == 2) {
+                for (BankAccount a : requests) {
+                    System.out.println(a.username);
+                }
+            }
+
+            if (x == 3) {
+                if (!bills.isEmpty()) {
+                    System.out.println(bills.poll());
+                }
+            }
+
+            if (x == 4) {
+                for (String b : bills) {
+                    System.out.println(b);
+                }
+            }
+
+            if (x == 5) {
+                if (!stack.isEmpty()) {
+                    System.out.println(stack.peek());
+                    System.out.println(stack.pop());
+                }
+            }
+
+            if (x == 6) break;
+        }
     }
-//    int a = sc.nextInt();
-//    task7(a,sc)
-    public static String task8(String a,int b){
-        if(a.length()==0)return "no";
-        if(b==a.length())return "yes";
-        char c=a.charAt(b);
-        if(c<'0' || c>'9')return "no";
-        return task8(a,b+1);
+
+    static BankAccount find(String n) {
+        for (BankAccount a : list) {
+            if (a.username.equals(n)) return a;
+        }
+        return null;
     }
-//    String a=sc.nextLine();
-//    System.out.println(task8(a,0));
-//    String b=sc.nextLine();
-//    System.out.println(task8(b,0));
-    public static int task9(String a,int b){
-        if (b == a.length())return b;
-        return task9(a,b+1);
-    }
-//    String a=sc.nextLine();
-//    System.out.println(task9(a,0));
-    public static int task10(int a,int b){
-        if(b==0)return a;
-        return task10(b,a%b);
-    }
-//    int a=sc.nextInt();
-//    int b=sc.nextInt();
-//    System.out.println(task10(a,b));
 }
