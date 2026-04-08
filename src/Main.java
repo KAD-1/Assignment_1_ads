@@ -9,7 +9,8 @@ public class Main {
     static Scanner sc = new Scanner(System.in);
     static int id = 1;
 
-    public static void main(String[] args) {
+    public static void main(String args[]) {
+
         BankAccount[] arr = new BankAccount[3];
         arr[0] = new BankAccount(1, "Ali", 150000);
         arr[1] = new BankAccount(2, "Dina", 220000);

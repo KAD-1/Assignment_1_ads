@@ -8,5 +8,4 @@ class BankAccount {
         this.username = username;
         this.balance = balance;
     }
-
 }
