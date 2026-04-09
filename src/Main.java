@@ -1,4 +1,5 @@
 import java.util.*;
+
 public class Main {
 
     static LinkedList<BankAccount> list = new LinkedList<>();
@@ -7,120 +8,165 @@ public class Main {
     static Queue<BankAccount> requests = new LinkedList<>();
 
     static Scanner sc = new Scanner(System.in);
-    static int id = 1;
+    static int id = 4;
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         BankAccount[] arr = new BankAccount[3];
         arr[0] = new BankAccount(1, "Ali", 150000);
-        arr[1] = new BankAccount(2, "Dina", 220000);
-        arr[2] = new BankAccount(3, "Pudge", 100000);
+        arr[1] = new BankAccount(2, "Sara", 220000);
+        arr[2] = new BankAccount(3, "Dina", 100000);
+
         for (int i = 0; i < 3; i++) {
-            System.out.println(arr[i].username + " " + arr[i].balance);
+            list.add(arr[i]);
         }
+
+        System.out.println("=== Predefined Accounts ===");
+        for (int i = 0; i < 3; i++) {
+            System.out.println((i + 1) + ". " + arr[i].username + " – Balance: " + arr[i].balance);
+        }
+
         while (true) {
-            System.out.println("1 Bank");
-            System.out.println("2 ATM");
-            System.out.println("3 Admin");
-            System.out.println("4 Exit");
+            System.out.println("\n=== Main Menu ===");
+            System.out.println("1 – Bank");
+            System.out.println("2 – ATM");
+            System.out.println("3 – Admin");
+            System.out.println("4 – Exit");
+
             int x = sc.nextInt();
+
             if (x == 1) bank();
-            if (x == 2) atm();
-            if (x == 3) admin();
-            if (x == 4) break;
+            else if (x == 2) atm();
+            else if (x == 3) admin();
+            else if (x == 4) break;
+            else System.out.println("Invalid option");
         }
     }
 
     static void bank() {
         while (true) {
-            System.out.println("1 add");
-            System.out.println("2 deposit");
-            System.out.println("3 withdraw");
-            System.out.println("4 show");
-            System.out.println("5 bill");
-            System.out.println("6 back");
+            System.out.println("\n=== Bank Menu ===");
+            System.out.println("1 – Add Account");
+            System.out.println("2 – Deposit");
+            System.out.println("3 – Withdraw");
+            System.out.println("4 – Show Accounts");
+            System.out.println("5 – Add Bill");
+            System.out.println("6 – Back");
 
             int x = sc.nextInt();
 
             if (x == 1) {
+                System.out.print("Enter username: ");
                 String n = sc.next();
                 requests.add(new BankAccount(id++, n, 0));
+                System.out.println("Request added successfully");
             }
 
-            if (x == 2) {
+            else if (x == 2) {
+                System.out.print("Enter username: ");
                 String n = sc.next();
                 BankAccount a = find(n);
+
                 if (a != null) {
+                    System.out.print("Deposit: ");
                     int d = sc.nextInt();
                     a.balance += d;
-                    stack.push("dep " + d + " " + n);
+                    stack.push("Deposit " + d + " to " + n);
+                    System.out.println("New balance: " + a.balance);
                 }
             }
 
-            if (x == 3) {
+            else if (x == 3) {
+                System.out.print("Enter username: ");
                 String n = sc.next();
                 BankAccount a = find(n);
+
                 if (a != null) {
+                    System.out.print("Withdraw: ");
                     int w = sc.nextInt();
+
                     if (a.balance >= w) {
                         a.balance -= w;
-                        stack.push("with " + w + " " + n);
+                        stack.push("Withdraw " + w + " from " + n);
+                        System.out.println("New balance: " + a.balance);
+                    } else {
+                        System.out.println("Not enough money");
                     }
                 }
             }
 
-            if (x == 4) {
+            else if (x == 4) {
+                System.out.println("=== Accounts List ===");
+                int i = 1;
+
                 for (BankAccount a : list) {
-                    System.out.println(a.username + " " + a.balance);
+                    System.out.println(i + ". " + a.username + " – Balance: " + a.balance);
+                    i++;
                 }
             }
 
-            if (x == 5) {
+            else if (x == 5) {
+                System.out.print("Enter bill: ");
                 String b = sc.next();
                 bills.add(b);
+                System.out.println("Added: " + b);
             }
 
-            if (x == 6) break;
+            else if (x == 6) break;
+            else System.out.println("Invalid option");
         }
     }
 
     static void atm() {
+        System.out.print("Enter username: ");
         String n = sc.next();
+
         BankAccount a = find(n);
 
-        if (a == null) return;
+        if (a == null) {
+            System.out.println("Account not found");
+            return;
+        }
 
         while (true) {
-            System.out.println("1 bal");
-            System.out.println("2 with");
-            System.out.println("3 back");
+            System.out.println("\n=== ATM Menu ===");
+            System.out.println("1 – Balance");
+            System.out.println("2 – Withdraw");
+            System.out.println("3 – Back");
 
             int x = sc.nextInt();
 
             if (x == 1) {
-                System.out.println(a.balance);
+                System.out.println("Balance: " + a.balance);
             }
 
-            if (x == 2) {
+            else if (x == 2) {
+                System.out.print("Withdraw: ");
                 int w = sc.nextInt();
+
                 if (a.balance >= w) {
                     a.balance -= w;
-                    stack.push("atm " + w + " " + n);
+                    stack.push("ATM Withdraw " + w + " from " + n);
+                    System.out.println("New balance: " + a.balance);
+                } else {
+                    System.out.println("Not enough money");
                 }
             }
 
-            if (x == 3) break;
+            else if (x == 3) break;
+            else System.out.println("Invalid option");
         }
     }
 
     static void admin() {
         while (true) {
-            System.out.println("1 ok acc");
-            System.out.println("2 show req");
-            System.out.println("3 pay bill");
-            System.out.println("4 show bills");
-            System.out.println("5 stack");
-            System.out.println("6 back");
+            System.out.println("\n=== Admin Menu ===");
+            System.out.println("1 – Process Account Request");
+            System.out.println("2 – Show Requests");
+            System.out.println("3 – Process Bill");
+            System.out.println("4 – Show Bills");
+            System.out.println("5 – Transaction History");
+            System.out.println("6 – Back");
 
             int x = sc.nextInt();
 
@@ -128,35 +174,47 @@ public class Main {
                 if (!requests.isEmpty()) {
                     BankAccount a = requests.poll();
                     list.add(a);
+                    System.out.println("Account created: " + a.username);
+                } else {
+                    System.out.println("No requests");
                 }
             }
 
-            if (x == 2) {
+            else if (x == 2) {
+                System.out.println("=== Requests ===");
                 for (BankAccount a : requests) {
                     System.out.println(a.username);
                 }
             }
 
-            if (x == 3) {
+            else if (x == 3) {
                 if (!bills.isEmpty()) {
-                    System.out.println(bills.poll());
+                    String bill = bills.poll();
+                    System.out.println("Processing: " + bill);
+                    stack.push("Bill paid: " + bill);
+                } else {
+                    System.out.println("No bills");
                 }
             }
 
-            if (x == 4) {
+            else if (x == 4) {
+                System.out.println("=== Bills ===");
                 for (String b : bills) {
                     System.out.println(b);
                 }
             }
 
-            if (x == 5) {
+            else if (x == 5) {
                 if (!stack.isEmpty()) {
-                    System.out.println(stack.peek());
-                    System.out.println(stack.pop());
+                    System.out.println("Last transaction: " + stack.peek());
+                    System.out.println("Undo → " + stack.pop());
+                } else {
+                    System.out.println("No history");
                 }
             }
 
-            if (x == 6) break;
+            else if (x == 6) break;
+            else System.out.println("Invalid option");
         }
     }
 
@@ -164,7 +222,7 @@ public class Main {
         for (BankAccount a : list) {
             if (a.username.equals(n)) return a;
         }
+        System.out.println("Account not found");
         return null;
     }
-
 }
