@@ -1,30 +1,62 @@
 A. Project Overview
-Basic algorithm-Bubble sort
-Advanced algorithm-Quick sort
-Searching-Binary searching
-The purpose of this experiment is to analyze and compare the performance of different algorithms using execution time.
-The program measures how fast each algorithm works on arrays of different sizes and types.
-B. Algorithm Descriptions
-in bubble sort, you choose 2 pairs of numbers in array, and compare them, if second num is greater than first, we need to swap them, and so on until the end,
-time colmplexity in the best case is n, in average n*n
-quick sort choose pivot element and if num greater than this pivot, number go to right side, in other case to left, and this algorithm wrote with recursively functions,
-and at the end we have nlogn time complexity
-and the last is binary searching this algorithm needs sorted array, and divide array into 2, and if num is smaller than choosen number in middle, code deletes all
-of right side, and do it until find number and the best case is 1, avg time complexity is logn
-C. Experimental Results
-| Size | Type   | Bubble Sort | Quick Sort | Faster |
-|------|--------|------------|------------|--------|
-| 10   | Random | 7700       | 8200       | Bubble |
-| 10   | Sorted | 4100       | 5600       | Bubble |
-| 100  | Random | 362400     | 51600      | Quick  |
-| 100  | Sorted | 249100     | 354100     | Bubble |
-| 1000 | Random | 7604000    | 240700     | Quick  |
-| 1000 | Sorted | 3385400    | 1301800    | Quick  |
-D. Screenshots
-<img width="317" height="410" alt="image" src="https://github.com/user-attachments/assets/6b6b161b-09b0-4aa0-a119-7fb229a2bef8" />
-<img width="367" height="427" alt="image" src="https://github.com/user-attachments/assets/ee2d457b-8c81-49fa-bd6e-1e3cf901d5ee" />
-<img width="356" height="439" alt="image" src="https://github.com/user-attachments/assets/643bb0da-7dce-4aba-88b9-044f59fd896f" />
-E. Reflection Section
-•	What you learned about algorithm efficiency
-I knew about sorting algoritms from school, but about searching algorithm firstly i heared in university, so i reaserched how i need to write searchingm and some 
-moments about writing sorting algoriithms in java, and i learned about their time complexity, while i wrote code i didnt have any problems, so it was not difficult.
+A graph is a data structure that consists of vertices (nodes) and edges (connections between nodes). In this project, a directed graph is implemented using an adjacency list.
+
+Vertex is a single node in the graph with a unique id
+Edge is a directed connection from one vertex to another
+BFS (Breadth-First Search) is a traversal that explores all neighbours at current depth before going deeper
+DFS (Depth-First Search) is a traversal that goes as deep as possible before backtracking
+
+
+B. Class Descriptions
+Vertex represents a node with a unique integer id.
+Edge represents a directed connection from source to destination.
+Graph stores vertices and edges and provides BFS and DFS traversal.
+Experiment builds test graphs, measures execution time and prints results.
+Main is the entry point that creates graphs and runs all experiments.
+Adjacency List
+Each vertex maps to a list of its direct neighbours. It is used instead of a matrix because it is memory efficient: O(V + E) space vs O(V^2) for a matrix.
+
+C. Algorithm Descriptions
+BFS (Breadth-First Search)
+Step by step:
+
+Add start vertex to a queue and mark it visited
+While queue is not empty, dequeue the front vertex
+Print it, then enqueue all unvisited neighbours
+
+Use cases: shortest path in unweighted graphs, level-order traversal, web crawlers
+Time complexity: O(V + E)
+DFS (Depth-First Search)
+Step by step:
+
+Push start vertex onto a stack
+While stack is not empty, pop the top vertex
+If not visited, mark it, print it, push all unvisited neighbours
+
+Use cases: cycle detection, topological sort, maze solving, connected components
+Time complexity: O(V + E)
+
+D. Experimental Results
+Graph Size -- BFS (ns) -- DFS (ns)
+10 vertices -- --
+30 vertices -- --
+100 vertices -- --
+Fill in the table with values from your console output after running the program.
+Observations
+Execution time grows linearly with graph size, confirming O(V + E) complexity. DFS is slightly faster in practice due to lower queue overhead. BFS visits vertices level by level while DFS goes deep first.
+Analysis
+How does graph size affect performance? Both algorithms slow down linearly as vertices and edges increase.
+Which is faster? DFS is slightly faster in most experiments.
+Do results match O(V + E)? Yes, time grows proportionally to V + E.
+When is BFS preferred? When shortest path is needed.
+Limitations of DFS? Can get stuck in deep branches, not optimal for shortest path.
+
+E. Screenshots
+Add screenshots after running the program:
+<img width="1762" height="791" alt="image" src="https://github.com/user-attachments/assets/a42b60f3-25c0-4c41-b853-d0e7c233c031" />
+<img width="1777" height="612" alt="image" src="https://github.com/user-attachments/assets/b385f8c3-fd42-4383-95aa-c94cfd8de99b" />
+
+
+F. Reflection
+Implementing this project helped me understand how graphs model real-world relationships such as networks, maps, and social connections. The key insight was that the choice between a queue and a stack completely changes the traversal order. BFS fans out level by level while DFS dives deep into one branch before exploring others.
+The biggest challenge was implementing iterative DFS that produces the same order as recursive DFS. Pushing neighbours onto the stack in reverse order solved the problem without adding complexity. Both algorithms share O(V + E) time complexity, but their different traversal paths make each better suited for different problems.
