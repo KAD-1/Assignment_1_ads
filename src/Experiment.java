@@ -1,79 +1,55 @@
-public class  Experiment {
+public class Experiment {
 
-    private Sorter sorter = new Sorter();
-    private Searcher searcher = new Searcher();
+    private String[] labels   = {"Small (10 vertices)", "Medium (30 vertices)", "Large (100 vertices)"};
+    private long[]   bfsTimes = new long[3];
+    private long[]   dfsTimes = new long[3];
 
-    public long measureSortTime(int[] arr, String type) {
-        int[] copy = arr.clone();
-
-        long start = System.nanoTime();
-
-        if (type.equals("bubble")) {
-            sorter.bubbleSort(copy);
-        } else {
-            sorter.quickSort(copy);
-        }
-
-        long end = System.nanoTime();
-        return end - start;
+    public void runTraversals(Graph g) {
+        System.out.println("--- Traversal output ---");
+        g.bfs(0);
+        g.dfs(0);
+        System.out.println("------------------------");
     }
 
-    public long measureSearchTime(int[] arr, int target) {
-        long start = System.nanoTime();
-        searcher.binarySearch(arr, target);
-        long end = System.nanoTime();
-        return end - start;
+    public void runMultipleTests() {
+        int[] sizes = {10, 30, 100};
+        for (int i = 0; i < sizes.length; i++) {
+            Graph g = buildGraph(sizes[i]);
+
+            long bfsStart = System.nanoTime();
+            silentRun(() -> g.bfs(0));
+            bfsTimes[i] = System.nanoTime() - bfsStart;
+
+            long dfsStart = System.nanoTime();
+            silentRun(() -> g.dfs(0));
+            dfsTimes[i] = System.nanoTime() - dfsStart;
+        }
     }
 
-    public void runAllExperiments() {
-        int[] sizes = {10, 100, 1000};
-
-        for (int size : sizes) {
-
-            System.out.println("===== SIZE: " + size + " =====");
-
-            int[] randomArr = sorter.generateRandomArray(size);
-
-            long bubbleRandom = measureSortTime(randomArr, "bubble");
-            long quickRandom = measureSortTime(randomArr, "quick");
-
-            System.out.println("Random Array:");
-            System.out.println("Bubble Sort: " + bubbleRandom);
-            System.out.println("Quick Sort: " + quickRandom);
-
-            if (bubbleRandom < quickRandom) {
-                System.out.println("Faster: Bubble Sort");
-            } else {
-                System.out.println("Faster: Quick Sort");
-            }
-
-            int[] sortedArr = randomArr.clone();
-            sorter.quickSort(sortedArr);
-
-            long bubbleSorted = measureSortTime(sortedArr, "bubble");
-            long quickSorted = measureSortTime(sortedArr, "quick");
-
-            System.out.println("\nSorted Array:");
-            System.out.println("Bubble Sort: " + bubbleSorted);
-            System.out.println("Quick Sort: " + quickSorted);
-
-            if (bubbleSorted < quickSorted) {
-                System.out.println("Faster: Bubble Sort");
-            } else {
-                System.out.println("Faster: Quick Sort");
-            }
-
-            int targetExist = sortedArr[size / 2];
-            int targetNotExist = -1;
-
-            long searchExist = measureSearchTime(sortedArr, targetExist);
-            long searchNotExist = measureSearchTime(sortedArr, targetNotExist);
-
-            System.out.println("\nBinary Search:");
-            System.out.println("Existing element: " + searchExist);
-            System.out.println("Non-existing element: " + searchNotExist);
-
-            System.out.println("-----------------------------\n");
+    public void printResults() {
+        System.out.println("\n========== Performance Results ==========");
+        System.out.printf("%-25s %15s %15s%n", "Graph Size", "BFS (ns)", "DFS (ns)");
+        System.out.println("-".repeat(57));
+        for (int i = 0; i < labels.length; i++) {
+            System.out.printf("%-25s %15d %15d%n", labels[i], bfsTimes[i], dfsTimes[i]);
         }
+        System.out.println("=========================================");
+    }
+
+    private Graph buildGraph(int n) {
+        Graph g = new Graph();
+        for (int i = 0; i < n; i++) g.addVertex(new Vertex(i));
+        for (int i = 0; i < n; i++) {
+            g.addEdge(i, (i + 1) % n);
+            g.addEdge(i, (i + 2) % n);
+        }
+        return g;
+    }
+
+    private void silentRun(Runnable r) {
+        java.io.PrintStream original = System.out;
+        System.setOut(new java.io.PrintStream(java.io.OutputStream.nullOutputStream()));
+        r.run();
+        System.setOut(original);
     }
 }
